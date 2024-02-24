@@ -20,6 +20,7 @@ jobs:
           pip install pylint==3.0.4
           pip install poetry
           pip install pytest
+          poetry install
       - name: Check Python syntax
         run: |
           find . -name '*.py' -exec python -m py_compile {} +
