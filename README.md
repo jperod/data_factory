@@ -1,6 +1,6 @@
 # Data Factory
 
-[![Build Status](https://github.com/jperod/data_factory/workflows/CI/badge.svg)](https://github.com/jperod/data_factory/actions)
+[![Build Status](https://github.com/jperod/data_factory/actions/workflows/ci-pylint-pytest.yml/badge.svg)](https://github.com/jperod/data_factory/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Data Factory is my attempy at building my own Python library for building data pipelines with ease for my personal projects, inspired on azure data factory.
