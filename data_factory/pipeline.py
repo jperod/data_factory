@@ -1,6 +1,7 @@
 """"Modules for Pipeline and Activity"""
 
 from enum import Enum
+from typing import Any
 from data_factory.utils.validation_utils import StringUtils
 
 
@@ -159,12 +160,15 @@ class Pipeline:
                     f"[Pipeline: {self.name}] --> ({i+1}/{len(self.activities)}) [Activity: {activity.name}] Initializing..."
                 )
             if previous_output:
+                self._validate_previous_output(previous_output)
                 # Update the previous_output variable with the current activity's output, currently supported values
                 vars_from_previous_output = [
                     str(var.value)
                     for var in SupportedPreviousActivityOutcomeVariable
                     if var.value in previous_output
                 ]
+                if verbose:
+                    print(f"vars_from_previous_output={vars_from_previous_output}")
                 # If exists, Instantiate new activity with parameters from previous
                 if len(vars_from_previous_output) > 0:
                     for _, var_prev_out in enumerate(vars_from_previous_output):
@@ -220,8 +224,12 @@ class Pipeline:
                 if verbose:
                     status = self.get_run_status()
                     print(f"\n[Pipeline: {self.name}] -> Failed!!! ")
-                    print(f"[Pipeline: {self.name}] -> failure_reason={self.failure_reason} ")
-                    print(f"[Pipeline: {self.name}] -> failure_message={self.failure_message} \n")
+                    print(
+                        f"[Pipeline: {self.name}] -> failure_reason={self.failure_reason} "
+                    )
+                    print(
+                        f"[Pipeline: {self.name}] -> failure_message={self.failure_message} \n"
+                    )
                 break
         else:
             self.run_status = PipelineRunStatus.SUCCEEDED
@@ -256,3 +264,24 @@ class Pipeline:
         str: The failure message.
         """
         return self.failure_message
+
+    def _validate_previous_output(self, previous_output: Any) -> bool:
+        """
+        Validate the keys of the 'previous_output' dictionary.
+
+        Args:
+        - previous_output (dict): The dictionary to be validated.
+
+        Raises:
+        - ValueError: If the keys are not valid according to the enum.
+        """
+        valid_keys = {var.value for var in SupportedPreviousActivityOutcomeVariable}
+
+        if not isinstance(previous_output, dict):
+            raise ValueError(f"Previous output must be a dictionary. current previous_output = {previous_output}")
+
+        for key in previous_output.keys():
+            if key not in valid_keys:
+                raise ValueError(
+                    f"Invalid key in previous_output: {key}. Allowed keys are: {valid_keys}."
+                )

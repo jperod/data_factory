@@ -3,17 +3,22 @@
 import json
 import subprocess
 
+
 class Utils:
     """General Utils for data factory"""
 
     @staticmethod
-    def get_root_path(verbose:bool=False) -> str:
+    def get_root_path(verbose: bool = False) -> str:
         """Get the root path of the algogrowth app."""
         try:
             # Run 'git rev-parse --show-toplevel' to get the root directory
-            repo_root = subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip()
+            repo_root = subprocess.check_output(
+                ["git", "rev-parse", "--show-toplevel"], text=True
+            ).strip()
             if verbose:
-                print(f"Warning! get_algogrowth_path() -> Detecting repo root @ {repo_root}.")
+                print(
+                    f"Warning! get_algogrowth_path() -> Detecting repo root @ {repo_root}."
+                )
             return repo_root
         except subprocess.CalledProcessError:
             # If 'git' command fails, fallback to a default path

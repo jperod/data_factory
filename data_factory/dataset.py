@@ -20,6 +20,7 @@ class Dataset:
         data_location: str,
         dataset_type: DatasetType,
         properties: dict = None,
+        parameters: dict = None,
     ) -> None:
         if not StringUtils.validate_snake_case(name):
             raise ValueError(f"The name '{name}' is not in snake_case.")
@@ -32,3 +33,28 @@ class Dataset:
 
         self.dataset_type = dataset_type
         self.properties = properties or {}
+        self.parameters = parameters or {}
+
+    def build_parametrized_data_location(self, **kwargs):
+        """
+        Replace placeholders in data_location using key-value pairs in parameters.
+
+        Args:
+        - kwargs: Key-value pairs to replace placeholders.
+
+        Returns:
+        str: The updated data_location.
+        """
+        updated_data_location = self.data_location
+
+        # Replace placeholders using provided key-value pairs
+        for key, value in kwargs.items():
+            placeholder = f"<{key.upper()}>"
+            if placeholder in updated_data_location:
+                if not value:
+                    value = ""
+                updated_data_location = updated_data_location.replace(
+                    placeholder, str(value)
+                )
+
+        return updated_data_location
